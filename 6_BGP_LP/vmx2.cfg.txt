@@ -1,0 +1,34 @@
+lab@vMX2# show | display set 
+set version 14.1R1.10
+set system host-name vMX2
+set system root-authentication encrypted-password "$1$iiqdh9ru$CBQygri2MkpfgtgdGo8GO1"
+set system login user lab uid 2000
+set system login user lab class super-user
+set system login user lab authentication encrypted-password "$1$oW1NeMUu$N7IVMfy8GfJ02jzQzJ39h/"
+set system services telnet connection-limit 5
+set system syslog user * any emergency
+set system syslog file messages any notice
+set system syslog file messages authorization info
+set system syslog file interactive-commands interactive-commands any
+set interfaces ge-0/0/0 unit 0 family inet address 9.9.123.2/24
+set interfaces ge-0/0/2 unit 0 family inet address 9.9.12.2/24
+set interfaces ge-0/0/3 unit 0 family inet address 9.9.24.2/24
+set interfaces em0 unit 0 family inet address 192.168.56.10/24
+set interfaces lo0 unit 0 family inet address 2.2.2.2/32
+set routing-options static route 77.0.0.0/24 reject
+set routing-options static route 77.0.1.0/24 reject
+set routing-options static route 77.0.2.0/24 reject
+set routing-options static route 77.0.3.0/24 reject
+set routing-options autonomous-system 100
+set protocols bgp group ebgp neighbor 9.9.123.123 peer-as 123
+set protocols bgp group ibgp type internal
+set protocols bgp group ibgp import LP_IN_200
+set protocols bgp group ibgp export nhs
+set protocols bgp group ibgp neighbor 9.9.12.1
+deactivate protocols bgp group ibgp neighbor 9.9.12.1
+set protocols bgp group ibgp neighbor 9.9.24.4
+set policy-options policy-statement LP_IN_200 term 1 then local-preference 200
+set policy-options policy-statement LP_IN_200 term 1 then accept
+set policy-options policy-statement nhs term 1 from protocol bgp
+set policy-options policy-statement nhs term 1 then next-hop self
+set policy-options policy-statement nhs term 1 then accept
