@@ -1,0 +1,29 @@
+lab@Customer_Networks# show | display set 
+set version 14.1R1.10
+set system host-name Customer_Networks
+set system root-authentication encrypted-password "$1$iiqdh9ru$CBQygri2MkpfgtgdGo8GO1"
+set system login user lab uid 2000
+set system login user lab class super-user
+set system login user lab authentication encrypted-password "$1$oW1NeMUu$N7IVMfy8GfJ02jzQzJ39h/"
+set system services telnet connection-limit 5
+set system syslog user * any emergency
+set system syslog file messages any notice
+set system syslog file messages authorization info
+set system syslog file interactive-commands interactive-commands any
+set interfaces ge-0/0/1 unit 0 family inet address 9.9.200.200/24
+set interfaces ge-0/0/2 unit 0 family inet address 9.9.201.200/24
+set interfaces em0 unit 0 family inet address 192.168.56.10/24
+set interfaces lo0 unit 0 family inet address 200.200.200.200/32
+set routing-options static route 1.0.0.0/24 reject
+set routing-options static route 2.0.0.0/24 reject
+set routing-options static route 3.0.0.0/24 reject
+set routing-options static route 4.0.0.0/24 reject
+set routing-options autonomous-system 200
+set protocols bgp path-selection always-compare-med
+set protocols bgp group ebgp export export-lo-static
+set protocols bgp group ebgp neighbor 9.9.200.123 peer-as 123
+set protocols bgp group ebgp neighbor 9.9.201.223 peer-as 223
+set policy-options policy-statement export-lo-static term 1 from protocol static
+set policy-options policy-statement export-lo-static term 1 then accept
+set policy-options policy-statement export-lo-static term 2 from interface lo0.0
+set policy-options policy-statement export-lo-static term 2 then accept
