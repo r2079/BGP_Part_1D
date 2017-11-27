@@ -1,0 +1,22 @@
+set version 14.1R1.10
+set system host-name vMX3
+set system root-authentication encrypted-password "$1$iiqdh9ru$CBQygri2MkpfgtgdGo8GO1"
+set system login user lab uid 2000
+set system login user lab class super-user
+set system login user lab authentication encrypted-password "$1$oW1NeMUu$N7IVMfy8GfJ02jzQzJ39h/"
+set system services telnet connection-limit 5
+set system syslog user * any emergency
+set system syslog file messages any notice
+set system syslog file messages authorization info
+set system syslog file interactive-commands interactive-commands any
+ set interfaces ge-0/0/0 unit 0 family inet address 9.9.13.3/24
+set interfaces ge-0/0/1 unit 0 family inet address 9.9.23.3/24
+set interfaces ge-0/0/2 unit 0 family inet address 9.9.34.3/24
+set interfaces em0 unit 0 family inet address 192.168.56.10/24
+set interfaces lo0 unit 0 family inet address 3.3.3.3/32
+set routing-options autonomous-system 1003
+set routing-options confederation 100
+set routing-options confederation members 1001
+set routing-options confederation members 1002
+set routing-options confederation members 1003
+set protocols bgp group ibgp-confed neighbor 9.9.23.2 peer-as 1002
