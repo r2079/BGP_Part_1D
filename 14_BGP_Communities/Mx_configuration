@@ -1,0 +1,105 @@
+lab@vMX-1> show configuration | display set | no-more
+set version 16.2R2.8
+set system host-name vMX-1
+set system root-authentication encrypted-password "$5$iBEBRAj5$7cJsubUgaVzauLx1V5W2QzJ2G2TOhsbdIRFOQAgQhW/"
+set system login user lab uid 2000
+set system login user lab class super-user
+set system login user lab authentication encrypted-password "$6$r0gGBtv8$tVl3Tj/PPnTXMPPximLayUCAf6EO1Xib/MExLKJBL62lzIKkBV4hUUIZF0toe6COaB5DUXjsoSnCLWRBTMHlW."
+set system services ssh
+set system services telnet
+set system services netconf ssh
+set system syslog file messages any notice
+set system syslog file messages authorization info
+set system syslog file interactive-commands interactive-commands any
+set logical-systems r1 interfaces lt-0/0/10 unit 12
+set logical-systems r1 interfaces lo0 unit 1
+set logical-systems r1 protocols bgp traceoptions file bgp.trace
+set logical-systems r1 protocols bgp traceoptions flag all
+set logical-systems r1 protocols bgp group ebgp export static-bgp
+set logical-systems r1 protocols bgp group ebgp neighbor 9.9.23.3 multihop ttl 10
+set logical-systems r1 protocols bgp group ebgp neighbor 9.9.23.3 passive
+set logical-systems r1 protocols bgp group ebgp neighbor 9.9.23.3 authentication-key "$9$NyVs4Pfz6/tUjA0"
+set logical-systems r1 protocols bgp group ebgp neighbor 9.9.23.3 peer-as 300
+set logical-systems r1 policy-options policy-statement static-bgp term 1 from protocol static
+set logical-systems r1 policy-options policy-statement static-bgp term 1 from route-filter 1.0.0.0/24 exact
+set logical-systems r1 policy-options policy-statement static-bgp term 1 from route-filter 3.0.0.0/24 exact
+set logical-systems r1 policy-options policy-statement static-bgp term 1 then community add comm1
+set logical-systems r1 policy-options policy-statement static-bgp term 1 then accept
+set logical-systems r1 policy-options policy-statement static-bgp term 2 from protocol static
+set logical-systems r1 policy-options policy-statement static-bgp term 2 from route-filter 2.0.0.0/24 exact
+set logical-systems r1 policy-options policy-statement static-bgp term 2 from route-filter 4.0.0.0/24 exact
+set logical-systems r1 policy-options policy-statement static-bgp term 2 then community add comm2
+set logical-systems r1 policy-options policy-statement static-bgp term 2 then accept
+set logical-systems r1 policy-options community comm1 members 100:1
+set logical-systems r1 policy-options community comm2 members 200:1
+set logical-systems r1 policy-options community no-advertise members no-advertise
+set logical-systems r1 routing-options static route 9.9.23.0/24 next-hop 9.9.12.2
+set logical-systems r1 routing-options static route 9.9.34.0/24 next-hop 9.9.12.2
+set logical-systems r1 routing-options static route 1.0.0.0/24 reject
+set logical-systems r1 routing-options static route 2.0.0.0/24 reject
+set logical-systems r1 routing-options static route 3.0.0.0/24 reject
+set logical-systems r1 routing-options static route 4.0.0.0/24 reject
+set logical-systems r1 routing-options autonomous-system 100
+set logical-systems r1 firewall family inet filter ttl_sec term 1 from protocol tcp
+set logical-systems r1 firewall family inet filter ttl_sec term 1 from ttl 253
+set logical-systems r1 firewall family inet filter ttl_sec term 1 from port 179
+set logical-systems r1 firewall family inet filter ttl_sec term 1 then accept
+set logical-systems r1 firewall family inet filter ttl_sec term 2 then count ttl_count
+set logical-systems r1 firewall family inet filter ttl_sec term 2 then log
+set logical-systems r1 firewall family inet filter ttl_sec term 2 then discard
+set logical-systems r2 interfaces lt-0/0/10 unit 21
+set logical-systems r2 interfaces lt-0/0/10 unit 23
+set logical-systems r2 interfaces lo0 unit 2
+set logical-systems r3 interfaces lt-0/0/10 unit 32
+set logical-systems r3 interfaces lt-0/0/10 unit 34
+set logical-systems r3 interfaces lo0 unit 3
+set logical-systems r3 protocols bgp group ebgp authentication-key "$9$PTF/cSeW87uOxd"
+set logical-systems r3 protocols bgp group ebgp neighbor 9.9.12.1 multihop ttl 10
+set logical-systems r3 protocols bgp group ebgp neighbor 9.9.12.1 import comm_policy
+set logical-systems r3 protocols bgp group ebgp neighbor 9.9.12.1 authentication-key "$9$bXY4ZQz6AtOHq0I"
+set logical-systems r3 protocols bgp group ebgp neighbor 9.9.12.1 peer-as 100
+set logical-systems r3 protocols bgp group ebgp neighbor 9.9.34.4 peer-as 400
+set logical-systems r3 policy-options policy-statement comm_policy term 1 from protocol bgp
+set logical-systems r3 policy-options policy-statement comm_policy term 1 from community comm1
+set logical-systems r3 policy-options policy-statement comm_policy term 1 then reject
+set logical-systems r3 policy-options policy-statement comm_policy term 2 from protocol bgp
+set logical-systems r3 policy-options policy-statement comm_policy term 2 from community comm2
+set logical-systems r3 policy-options policy-statement comm_policy term 2 then accept
+set logical-systems r3 policy-options community comm1 members 100:1
+set logical-systems r3 policy-options community comm2 members 200:1
+set logical-systems r3 routing-options static route 9.9.12.0/24 next-hop 9.9.23.2
+set logical-systems r3 routing-options autonomous-system 300
+set logical-systems r4 interfaces lt-0/0/10 unit 43
+set logical-systems r4 interfaces lo0 unit 4
+set logical-systems r4 protocols bgp group ebgp authentication-key "$9$pzPbOIcN-wg4ZKMJD"
+set logical-systems r4 protocols bgp group ebgp neighbor 9.9.34.3 peer-as 300
+set logical-systems r4 routing-options autonomous-system 400
+set chassis aggregated-devices ethernet device-count 2
+set chassis fpc 0 pic 0 tunnel-services bandwidth 1g
+set chassis fpc 0 pic 0 interface-type xe
+set chassis fpc 0 lite-mode
+set interfaces lt-0/0/10 unit 12 encapsulation ethernet
+set interfaces lt-0/0/10 unit 12 peer-unit 21
+set interfaces lt-0/0/10 unit 12 family inet address 9.9.12.1/24
+set interfaces lt-0/0/10 unit 21 encapsulation ethernet
+set interfaces lt-0/0/10 unit 21 peer-unit 12
+set interfaces lt-0/0/10 unit 21 family inet address 9.9.12.2/24
+set interfaces lt-0/0/10 unit 23 encapsulation ethernet
+set interfaces lt-0/0/10 unit 23 peer-unit 32
+set interfaces lt-0/0/10 unit 23 family inet address 9.9.23.2/24
+set interfaces lt-0/0/10 unit 32 encapsulation ethernet
+set interfaces lt-0/0/10 unit 32 peer-unit 23
+set interfaces lt-0/0/10 unit 32 family inet address 9.9.23.3/24
+set interfaces lt-0/0/10 unit 34 encapsulation ethernet
+set interfaces lt-0/0/10 unit 34 peer-unit 43
+set interfaces lt-0/0/10 unit 34 family inet address 9.9.34.3/24
+set interfaces lt-0/0/10 unit 43 encapsulation ethernet
+set interfaces lt-0/0/10 unit 43 peer-unit 34
+set interfaces lt-0/0/10 unit 43 family inet address 9.9.34.4/24
+set interfaces fxp0 description "MGMT ADDRESS - DO NOT DELETE"
+set interfaces fxp0 unit 0 family inet address 192.168.0.91/24
+set interfaces lo0 unit 1 family inet address 1.1.1.1/32
+set interfaces lo0 unit 2 family inet address 2.2.2.2/32
+set interfaces lo0 unit 3 family inet address 3.3.3.3/32
+set interfaces lo0 unit 4 family inet address 4.4.4.4/32
+set protocols lldp interface all
